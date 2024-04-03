@@ -1,0 +1,133 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+ 
+# read text files with peak integrals from spectragryph into pandas dataframes
+dfA = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SA.txt", sep=" ",header=None)
+dfB = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SB.txt", sep=" ",header=None)
+dfC = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SC.txt", sep=" ",header=None)
+dfD = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SD.txt", sep=" ",header=None)
+dfE = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SE.txt", sep=" ",header=None)
+dfFF = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SFF.txt", sep=" ",header=None)
+dfF = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SF.txt", sep=" ",header=None)
+dfG = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SG.txt", sep=" ",header=None)
+dfH = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SH.txt", sep=" ",header=None)
+dfI = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistry/Vibrational Spectroscopy/Kinetic Data - SI.txt", sep=" ",header=None)
+dfkin=pd.concat([dfA,dfB,dfC,dfD,dfE,dfFF,dfF,dfG,dfH,dfI],ignore_index=True,axis=1) #combine into one dataframe
+
+#Data input:
+labels = ["SA (1:0.20 / 10 g/g Init.)","SB (1:0.25/10 g/g Init.) ","SC (1:0.30/10 g/g Init.)","SD (1:0.20/20 g/g Init.) ","SE (1:0.25/20 g/g Init.)","SFF (1:0.30/20 g/g Init.) ","SF (1:0.30/20 g/g Init.) ", "SG (1:0.20/30 g/g Init.)","SH (1:0.25/30 g/g Init.)","SI (1:0.30/30 g/g Init.)"]
+temp = [80,100,120] #in °C
+timesteps = np.linspace(0,89,90) #in min
+CCinttherm = [[565.8,394.5,292.9,247.4],[338.3,289.6,240,249.1],[322.6,332.2,222.4,200.8],[299.8,194.1,190.1,197.9],[322.3,258.3,323.8,252.6],[318.1,343.5,214.1,218.7],[542.3,492.3,431.6,211.4],[329.3,302.7,267.9],[317.2,262.4,306.2],[334.3,324.6,206.8,212.7]]
+
+#function to calculate conversion for the given datasets:
+def calcconv (ccint):
+    convout = []
+    convcollect = []
+    for i in range(len(ccint)):
+        for j in range(len(ccint[i])-1):
+            convcollect.append((1-ccint[i][j+1]/ccint[i][0])*100)
+        convout.append(convcollect.copy())
+        convcollect.clear()
+    return convout
+
+#function to plot Thermal Conversion:
+def plotthermal (temp,ccinttherm,labels):
+    Convtherm = calcconv(ccinttherm)
+    plt.figure(figsize =(6,6), dpi=120)
+    plt.title("Thermal Initiation - Conversion vs. Temperature")
+    plt.xlabel("Temperature [°C]")
+    plt.ylabel("Conversion [%]")
+    plt.xlim(np.min(temp)-2,np.max(temp)+2)
+    tempxdata= []
+    for i in range(len(Convtherm)):
+        for x in range(len(Convtherm[i])):
+            tempxdata.append(temp[x])
+        plt.plot(tempxdata,Convtherm[i])
+        plt.scatter(tempxdata,Convtherm[i],label=labels[i])
+        tempxdata.clear()
+    plt.legend(bbox_to_anchor=(1.05, 0.5), loc='center left')
+    plt.show()
+    plt.close()
+    print(Convtherm,"\n",10*"---------")
+     
+#function to plot the kinetic data:    
+def plotkin(kindata,labels,tS):
+    CCinitkin = []
+    for i in range(len(labels)):
+        CCinitkin.append(kindata[i].tolist())
+    Convkin = calcconv(CCinitkin)
+    plt.figure(figsize =(6,6), dpi=120)
+    plt.title("Metal Catalysed Initiation - Conversion vs. Time")
+    plt.xlabel("Time [min]")
+    plt.ylabel("Conversion [%]")
+    plt.ylim(0,30)
+    plt.xlim(np.min(tS),np.max(tS))
+    tempxdata= []
+    for i in range(len(Convkin)):
+        for x in range(len(Convkin[i])):
+            tempxdata.append([x])
+        plt.plot(tempxdata,Convkin[i],label=labels[i],linewidth=1)
+        plt.scatter(tempxdata,Convkin[i],s=8)
+        tempxdata.clear()
+    plt.legend(bbox_to_anchor=(1.05, 0.5), loc='center left')
+    plt.show()
+    plt.close()
+    #plot Variation of Initiator:
+    plt.figure(figsize =(6,6), dpi=120)
+    plt.title("Metal Catalysed Initiation - Variation of Initiator\n(const. Ratio w/w of BADGE-MA/Styrene ~ 1:0.25)")
+    plt.xlabel("Time [min]")
+    plt.ylabel("C=C Integral Ratio [A/A0]")
+    plt.ylim(0,30)
+    plt.xlim(np.min(tS),np.max(tS))
+    tempxdata= []
+    for x in range(len(Convkin[1])):
+        tempxdata.append([x])
+    plt.plot(tempxdata,Convkin[1],label=labels[1],linewidth=1)
+    plt.scatter(tempxdata,Convkin[1],s=8)
+    tempxdata.clear()    
+    for x in range(len(Convkin[4])):
+        tempxdata.append([x])
+    plt.plot(tempxdata,Convkin[4],label=labels[4],linewidth=1)
+    plt.scatter(tempxdata,Convkin[4],s=8)
+    tempxdata.clear()
+    for x in range(len(Convkin[8])):
+        tempxdata.append([x])
+    plt.plot(tempxdata,Convkin[8],label=labels[8],linewidth=1)
+    plt.scatter(tempxdata,Convkin[8],s=8)
+    tempxdata.clear()   
+    plt.legend(loc='lower right')
+    plt.show()
+    plt.close()
+    #plot Variation of BADGE-MA/Styrene Ratio:
+    plt.figure(figsize =(6,6), dpi=120)
+    plt.title("Metal Catalysed Initiation - Variation BADGE-MA/Styrene Ratio \n(Const. Initiator ~ 20 g/g)")
+    plt.xlabel("Time [min]")
+    plt.ylabel("Conversion [%]")
+    plt.ylim(0,30)
+    plt.xlim(np.min(tS),np.max(tS))
+    tempxdata= []
+    for x in range(len(Convkin[3])):
+        tempxdata.append([x])
+    plt.plot(tempxdata,Convkin[3],label=labels[3],linewidth=1)
+    plt.scatter(tempxdata,Convkin[3],s=8)
+    tempxdata.clear()    
+    for x in range(len(Convkin[4])):
+        tempxdata.append([x])
+    plt.plot(tempxdata,Convkin[4],label=labels[4],linewidth=1)
+    plt.scatter(tempxdata,Convkin[4],s=8)
+    tempxdata.clear()
+    for x in range(len(Convkin[6])):
+        tempxdata.append([x])
+    plt.plot(tempxdata,Convkin[6],label=labels[6],linewidth=1)
+    plt.scatter(tempxdata,Convkin[6],s=8)
+    tempxdata.clear()   
+    plt.legend(loc='lower right')
+    plt.show()
+    plt.close()
+    print(Convkin,"\n",10*"---------")
+    
+#Obtain Plots:
+plotkin(dfkin,labels,timesteps)
+plotthermal(temp,CCinttherm,labels)
