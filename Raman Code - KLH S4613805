@@ -16,7 +16,7 @@ dfI = pd.read_csv("C:/Users/kevin/OneDrive/Year 2/IIA/Biomacromolecular Chemistr
 dfkin=pd.concat([dfA,dfB,dfC,dfD,dfE,dfFF,dfF,dfG,dfH,dfI],ignore_index=True,axis=1) #combine into one dataframe
 
 #Data input:
-labels = ["SA (1:0.20 / 10 g/g Init.)","SB (1:0.25/10 g/g Init.) ","SC (1:0.30/10 g/g Init.)","SD (1:0.20/20 g/g Init.) ","SE (1:0.25/20 g/g Init.)","SFF (1:0.30/20 g/g Init.) ","SF (1:0.30/20 g/g Init.) ", "SG (1:0.20/30 g/g Init.)","SH (1:0.25/30 g/g Init.)","SI (1:0.30/30 g/g Init.)"]
+labels = ["SA (1:0.231 / 12 mg/g Init.)","SB (1:0.249/14 mg/g Init.) ","SC (1:0.301/10 mg/g Init.)","SD (1:0.358/25 mg/g Init.) ","SE (1:0.289/25 mg/g Init.)","SFF (1:0.305/25 mg/g Init.) ","SF (1:0.300/26 mg/g Init.) ", "SG (1:0.202/37 mg/g Init.)","SH (1:0.242/30 mg/g Init.)","SI (1:0.298/37 mg/g Init.)"]
 temp = [80,100,120] #in °C
 timesteps = np.linspace(0,89,90) #in min
 CCinttherm = [[565.8,394.5,292.9,247.4],[338.3,289.6,240,249.1],[322.6,332.2,222.4,200.8],[299.8,194.1,190.1,197.9],[322.3,258.3,323.8,252.6],[318.1,343.5,214.1,218.7],[542.3,492.3,431.6,211.4],[329.3,302.7,267.9],[317.2,262.4,306.2],[334.3,324.6,206.8,212.7]]
@@ -76,33 +76,33 @@ def plotkin(kindata,labels,tS):
     plt.close()
     #plot Variation of Initiator:
     plt.figure(figsize =(6,6), dpi=120)
-    plt.title("Metal Catalysed Initiation - Variation of Initiator\n(const. Ratio w/w of BADGE-MA/Styrene ~ 1:0.25)")
+    plt.title("Metal Catalysed Initiation - Variation of Initiator\n(const. Ratio w/w of BADGE-MA/Styrene ~ 1:0.30)")
     plt.xlabel("Time [min]")
     plt.ylabel("C=C Integral Ratio [A/A0]")
     plt.ylim(0,30)
     plt.xlim(np.min(tS),np.max(tS))
     tempxdata= []
-    for x in range(len(Convkin[1])):
+    for x in range(len(Convkin[2])):
         tempxdata.append([x])
-    plt.plot(tempxdata,Convkin[1],label=labels[1],linewidth=1)
-    plt.scatter(tempxdata,Convkin[1],s=8)
+    plt.plot(tempxdata,Convkin[2],label=labels[2],linewidth=1)
+    plt.scatter(tempxdata,Convkin[2],s=8)
     tempxdata.clear()    
-    for x in range(len(Convkin[4])):
+    for x in range(len(Convkin[6])):
         tempxdata.append([x])
-    plt.plot(tempxdata,Convkin[4],label=labels[4],linewidth=1)
-    plt.scatter(tempxdata,Convkin[4],s=8)
+    plt.plot(tempxdata,Convkin[6],label=labels[6],linewidth=1)
+    plt.scatter(tempxdata,Convkin[6],s=8)
     tempxdata.clear()
-    for x in range(len(Convkin[8])):
+    for x in range(len(Convkin[9])):
         tempxdata.append([x])
-    plt.plot(tempxdata,Convkin[8],label=labels[8],linewidth=1)
-    plt.scatter(tempxdata,Convkin[8],s=8)
+    plt.plot(tempxdata,Convkin[9],label=labels[9],linewidth=1)
+    plt.scatter(tempxdata,Convkin[9],s=8)
     tempxdata.clear()   
     plt.legend(loc='lower right')
     plt.show()
     plt.close()
     #plot Variation of BADGE-MA/Styrene Ratio:
     plt.figure(figsize =(6,6), dpi=120)
-    plt.title("Metal Catalysed Initiation - Variation BADGE-MA/Styrene Ratio \n(Const. Initiator ~ 20 g/g)")
+    plt.title("Metal Catalysed Initiation - Variation BADGE-MA/Styrene Ratio \n(Const. Initiator ~ 25 mg/g)")
     plt.xlabel("Time [min]")
     plt.ylabel("Conversion [%]")
     plt.ylim(0,30)
